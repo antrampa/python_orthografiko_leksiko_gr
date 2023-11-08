@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Word List</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/">Word App</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/add_word">Add</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/words">Words</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+          {% if current_user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      <h1>Word List</h1>
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Word</th>
+            <th>Extra</th>
+            <th>Wrong Possibilities</th>
+            <th>Date Created</th>
+            <th>Date Updated</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for word in words %}
+          <tr>
+            <td>{{ word[0] }}</td>
+            <td>{{ word[1] }}</td>
+            <td>{{ word[2] }}</td>
+            <td>{{ word[3] }}</td>
+            <td>{{ word[4] }}</td>
+            <td>{{ word[5] }}</td>
+            <td>
+              <a href="/edit/{{ word[0] }}" class="btn btn-primary btn-sm"
+                >Edit</a
+              >
+              <a href="/delete/{{ word[0] }}" class="btn btn-danger btn-sm"
+                >Delete</a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

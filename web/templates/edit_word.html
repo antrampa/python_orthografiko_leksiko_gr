@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Edit Word</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/">Word App</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/add_word">Add</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/words">Words</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+          {% if current_user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      <h1>Edit Word</h1>
+      <form method="POST">
+        <div class="form-group">
+          <label for="Word">Word:</label>
+          <input
+            type="text"
+            name="Word"
+            class="form-control"
+            value="{{ word[1] }}"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="Extra">Extra:</label>
+          <input
+            type="text"
+            name="Extra"
+            class="form-control"
+            value="{{ word[2] }}"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="Wrong_posibilities">Wrong Possibilities:</label>
+          <textarea name="Wrong_posibilities" class="form-control" rows="4">
+{{ word[3] }}</textarea
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{{ url_for('words') }}" class="btn btn-secondary">Cancel</a>
+      </form>
+    </div>
+  </body>
+</html>
