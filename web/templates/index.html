@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Word Application</title>
+    <title>Ορθογραφικό Λεξικό</title>
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
@@ -9,7 +9,7 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/">Word App</a>
+      <a class="navbar-brand" href="/">Ορθογραφικό Λεξικό</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -23,21 +23,23 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
+          {% if current_user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="/add_word">Add</a>
+            <a class="nav-link" href="/add_word">Καταχώρηση</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/words">Words</a>
+            <a class="nav-link" href="/words">Λέξεις</a>
           </li>
+          {% endif %}
         </ul>
         <ul class="navbar-nav ml-auto">
           {% if current_user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="/logout">Logout</a>
+            <a class="nav-link" href="/logout">Αποσύνδεση</a>
           </li>
           {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="/login">Login</a>
+            <a class="nav-link" href="/login">Σύνδεση</a>
           </li>
           {% endif %}
         </ul>
@@ -45,18 +47,18 @@
     </nav>
 
     <div class="container mt-4">
-      <h1>Word List</h1>
+      <h1>Λέξεις</h1>
       <form method="GET" action="/search">
         <div class="input-group mb-3">
           <input
             type="text"
             class="form-control"
             name="search_query"
-            placeholder="Search..."
+            placeholder="Αναζήτηση λέξεων..."
             value="{{ search_query }}"
           />
           <div class="input-group-append">
-            <button class="btn btn-primary" type="submit">Search</button>
+            <button class="btn btn-primary" type="submit">Αναζήτηση</button>
           </div>
         </div>
       </form>
@@ -64,24 +66,31 @@
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
+            {% if current_user.is_authenticated %}
             <th>ID</th>
-            <th>Word</th>
-            <th>Extra</th>
-            <th>Wrong Possibilities</th>
-            <th>Date Created</th>
-            <th>Date Updated</th>
-            <th>Actions</th>
+            {% endif %}
+            <th>Λέξη</th>
+            <th>Επιπλέον Πληροφορίες</th>
+            <th>Λάθος πιθανότητες</th>
+            <th>Ημ/νία Καταχώρησης</th>
+            <th>Ημ/νία Τροποποίησης</th>
+            {% if current_user.is_authenticated %}
+            <th>Ενέργειες</th>
+            {% endif %}
           </tr>
         </thead>
         <tbody>
           {% for word in search_results %}
           <tr>
+            {% if current_user.is_authenticated %}
             <td>{{ word[0] }}</td>
+            {% endif %}
             <td>{{ word[1] }}</td>
             <td>{{ word[2] }}</td>
             <td>{{ word[3] }}</td>
             <td>{{ word[4] }}</td>
             <td>{{ word[5] }}</td>
+            {% if current_user.is_authenticated %}
             <td>
               <a href="/edit/{{ word[0] }}" class="btn btn-primary btn-sm"
                 >Edit</a
@@ -90,6 +99,7 @@
                 >Delete</a
               >
             </td>
+            {% endif %}
           </tr>
           {% endfor %}
         </tbody>
