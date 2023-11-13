@@ -1,1 +1,4 @@
 web/words.db
+tesseract-ocr/images/*
+.gitignore
+tesseract-ocr/txt/*
