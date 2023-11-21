@@ -16,6 +16,8 @@ def extract_greek_words(image_path, output_path):
 
     # Use Tesseract to do OCR on the image
     text = pytesseract.image_to_string(img, lang='ell', config=f'--tessdata-dir {tessdata_path}')  # 'ell' is the language code for Greek
+    with open("txt/text.txt", 'w', encoding='utf-8') as file1:
+        file1.write(text)
 
     # Extract Greek words from the OCR result
     greek_words = [word for word in text.split() if any(char.isalpha() and ord(char) >= 880 and ord(char) <= 1023 for char in word)]
