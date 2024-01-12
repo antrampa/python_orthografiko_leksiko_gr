@@ -30,6 +30,9 @@
           <li class="nav-item">
             <a class="nav-link" href="/words">Λέξεις</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/chat">Chat</a>
+          </li>
           {% endif %}
         </ul>
         <ul class="navbar-nav ml-auto">
@@ -71,7 +74,9 @@
             {% endif %}
             <th>Λέξη</th>
             <th>Επιπλέον Πληροφορίες</th>
+            {% if current_user.is_authenticated %}
             <th>Λάθος πιθανότητες</th>
+            {% endif %}
             <th>Ημ/νία Καταχώρησης</th>
             <th>Ημ/νία Τροποποίησης</th>
             {% if current_user.is_authenticated %}
@@ -87,7 +92,9 @@
             {% endif %}
             <td>{{ word[1] }}</td>
             <td>{{ word[2] }}</td>
+            {% if current_user.is_authenticated %}
             <td>{{ word[3] }}</td>
+            {% endif %}
             <td>{{ word[4] }}</td>
             <td>{{ word[5] }}</td>
             {% if current_user.is_authenticated %}

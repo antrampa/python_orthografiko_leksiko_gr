@@ -4,6 +4,7 @@ from flask import session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 import sqlite3
 import datetime
+# from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
@@ -40,6 +41,14 @@ with app.app_context():
             Wrong_posibilities TEXT,
             date_create DATETIME NOT NULL,
             date_update DATETIME
+        )
+    ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sender TEXT NOT NULL,
+            message TEXT NOT NULL,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
     db.commit()
@@ -158,7 +167,7 @@ def add_word():
 
 @app.route('/search')
 def search():
-    search_query = request.args.get('search_query', '').strip()
+    search_query = request.args.get('search_query', '').strip().lower()
 
     if search_query:
         # Query the database for words that match the search query
@@ -166,7 +175,7 @@ def search():
         cursor = db.cursor()
         cursor.execute('''
             SELECT * FROM Words
-            WHERE Word LIKE ? OR Extra LIKE ? OR Wrong_posibilities LIKE ?
+            WHERE lower(Word) LIKE ? OR lower(Extra) LIKE ? OR lower(Wrong_posibilities) LIKE ?
         ''', (f"%{search_query}%", f"%{search_query}%", f"%{search_query}%"))
         search_results = cursor.fetchall()
     else:
@@ -205,6 +214,34 @@ def logout():
     flash('Logged out successfully', 'success')
     return redirect(url_for('index'))
 
+
+
+@app.route('/chat', methods=['GET', 'POST'])
+@login_required
+def chat():
+    if request.method == 'POST':
+        sender = request.form['sender']
+        message = request.form['message']
+
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("INSERT INTO messages (sender, message) VALUES (?, ?)", (sender, message))
+        db.commit()
+
+        flash('Message sent successfully.', 'success')
+
+    # Fetch existing messages from the database
+    try:
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute('SELECT * FROM messages ORDER BY timestamp desc LIMIT 100')
+        messages = cursor.fetchall()
+        #print(messages)
+    except sqlite3.Error as e:
+        print("SQLite error:", e)
+        messages = []
+
+    return render_template('chat.html', messages=messages)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000) #, debug=True

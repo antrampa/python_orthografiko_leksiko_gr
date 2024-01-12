@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ορθογραφικό Λεξικό</title>
     <link
       rel="stylesheet"
@@ -50,48 +52,38 @@
     </nav>
 
     <div class="container mt-4">
-      <h1>Word List</h1>
-      <table class="table table-bordered table-striped">
-        <thead>
-          <tr>
-            {% if current_user.is_authenticated %}
-            <th>ID</th>
-            {% endif %}
-            <th>Λέξη</th>
-            <th>Επιπλέον Πληροφορίες</th>
-            <th>Λάθος πιθανότητες</th>
-            <th>Ημ/νία Καταχώρησης</th>
-            <th>Ημ/νία Τροποποίησης</th>
-            {% if current_user.is_authenticated %}
-            <th>Ενέργειες</th>
-            {% endif %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for word in words %}
-          <tr>
-            {% if current_user.is_authenticated %}
-            <td>{{ word[0] }}</td>
-            {% endif %}
-            <td>{{ word[1] }}</td>
-            <td>{{ word[2] }}</td>
-            <td>{{ word[3] }}</td>
-            <td>{{ word[4] }}</td>
-            <td>{{ word[5] }}</td>
-            {% if current_user.is_authenticated %}
-            <td>
-              <a href="/edit/{{ word[0] }}" class="btn btn-primary btn-sm"
-                >Edit</a
-              >
-              <a href="/delete/{{ word[0] }}" class="btn btn-danger btn-sm"
-                >Delete</a
-              >
-            </td>
-            {% endif %}
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      {% if current_user.is_authenticated %}
+      <h1>Chat</h1>
+
+      <form method="POST">
+        <div class="form-group">
+          <label for="sender">Your Name:</label>
+          <input type="text" name="sender" class="form-control" required />
+        </div>
+        <div class="form-group">
+          <label for="message">Your Message:</label>
+          <textarea
+            name="message"
+            class="form-control"
+            rows="4"
+            required
+          ></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Send</button>
+        <button type="reset" class="btn btn-warning">Clear</button>
+      </form>
+      <hr />
+      <div id="chat-messages">
+        {% if messages %} {% for message in messages %}
+        <p>
+          <strong>{{ message[1] }}</strong>: {{ message[2] }}
+          <i>({{ message[3] }})</i>
+        </p>
+        {% endfor %} {% endif %}
+      </div>
+
+      {% endif %}
     </div>
   </body>
 </html>
