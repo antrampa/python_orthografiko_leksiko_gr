@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask.globals import g
 from flask import session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
@@ -242,6 +242,19 @@ def chat():
         messages = []
 
     return render_template('chat.html', messages=messages)
+
+@app.route('/get_messages')
+def get_messages():
+    try:
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute('SELECT * FROM messages ORDER BY timestamp desc LIMIT 1000')
+        messages = cursor.fetchall()
+        #print(messages)
+    except sqlite3.Error as e:
+        print("SQLite error:", e)
+        messages = []
+    return jsonify(messages)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000) #, debug=True

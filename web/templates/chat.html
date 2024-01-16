@@ -74,7 +74,7 @@
         <button type="reset" class="btn btn-warning">Clear</button>
       </form>
       <hr />
-      <div id="chat-messages">
+      <div id="chat-container" style="overflow-y: scroll; height: 500px">
         {% if messages %} {% for message in messages %}
         <p>
           <strong>{{ message[1] }}</strong>: {{ message[2] }}
@@ -85,5 +85,30 @@
 
       {% endif %}
     </div>
+
+    <script>
+      function getMessages() {
+        // Add code to fetch the latest messages from the server
+        fetch("/get_messages")
+          .then((response) => response.json())
+          .then((messages) => {
+            // Display the messages in the chat container
+            const chatContainer = document.getElementById("chat-container");
+            chatContainer.innerHTML = messages
+              .map(
+                (msg) => `<p>
+                  <strong>${msg[1]}</strong>: ${msg[2]}
+                  <i>(${new Date(msg[3]).toLocaleString()})</i>`
+              )
+              .join("");
+          });
+      }
+
+      // Fetch messages initially when the page loads
+      getMessages();
+
+      // Set up a timer to refresh messages every 1 second
+      setInterval(getMessages, 1000);
+    </script>
   </body>
 </html>
