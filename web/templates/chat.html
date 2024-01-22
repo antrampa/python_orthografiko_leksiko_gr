@@ -74,7 +74,7 @@
           ></textarea>
         </div>
         <button type="submit" class="btn btn-primary">Send</button>
-        <button type="button" class="btn btn-success" onclick="sendMessage()" disabled="disabled">Send via webhook</button>
+        <!-- <button type="button" class="btn btn-success" onclick="sendMessage()" disabled="disabled">Send via webhook</button> -->
         <button type="reset" class="btn btn-warning">Clear</button>
 
       </form>
@@ -97,33 +97,33 @@
 
 
 <script>
-  var socket = io.connect('http://' + document.domain + ':' + location.port);
-  console.log('Socket: http://' + document.domain + ':' + location.port);
+  // var socket = io.connect('http://' + document.domain + ':' + location.port);
+  // console.log('Socket: http://' + document.domain + ':' + location.port);
 
-  socket.on('connect', function() {
-    console.log('Connected to server');
-  });
+  // socket.on('connect', function() {
+  //   console.log('Connected to server');
+  // });
 
-  socket.on('disconnect', function() {
-      console.log('Disconnected from server');
-  });
+  // socket.on('disconnect', function() {
+  //     console.log('Disconnected from server');
+  // });
 
-  // Event handler for receiving new messages
-  socket.on('new_message', function(data) {
-      var messageContainer = document.getElementById('chat-container');
+  // // Event handler for receiving new messages
+  // socket.on('new_message', function(data) {
+  //     var messageContainer = document.getElementById('chat-container');
       
-      var newMessage = `<p>
-                  <strong>${data.sender}</strong>: ${data.message}
-                  <i>(${data.datetime})</i>
-        </p>`;
-        messageContainer.innerHTML = newMessage + 
-        messageContainer.innerHTML;
+  //     var newMessage = `<p>
+  //                 <strong>${data.sender}</strong>: ${data.message}
+  //                 <i>(${data.datetime})</i>
+  //       </p>`;
+  //       messageContainer.innerHTML = newMessage + 
+  //       messageContainer.innerHTML;
       
-        showNotification('New Message from ' + data.sender, {
-            body: 'You have a new message!',
-            icon: 'icon.png'
-        });
-  });
+  //       showNotification('New Message from ' + data.sender, {
+  //           body: 'You have a new message!',
+  //           icon: 'icon.png'
+  //       });
+  // });
 
   // Function to send a new message
   function sendMessage() {

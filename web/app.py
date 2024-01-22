@@ -6,11 +6,11 @@ import sqlite3
 import datetime
 
 # from flask_mysqldb import MySQL
-from flask_socketio import SocketIO, emit
+# from flask_socketio import SocketIO, emit
 
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+# socketio = SocketIO(app)
 app.secret_key = "your_secret_key_here"
 
 
@@ -293,36 +293,36 @@ def get_messages():
     return jsonify(messages)
 
 
-@socketio.on("message")
-def handle_message(message):
-    print("message", message)
-    sender = message["sender"]
-    message = message["message"]
+# @socketio.on("message")
+# def handle_message(message):
+#     print("message", message)
+#     sender = message["sender"]
+#     message = message["message"]
 
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute(
-        "INSERT INTO messages (sender, message) VALUES (?, ?)", (sender, message)
-    )
-    db.commit()
-    # Broadcast the new message to all connected clients
+#     db = get_db()
+#     cursor = db.cursor()
+#     cursor.execute(
+#         "INSERT INTO messages (sender, message) VALUES (?, ?)", (sender, message)
+#     )
+#     db.commit()
+#     # Broadcast the new message to all connected clients
 
-    now = datetime.datetime.now()
-    formatted_date = now.strftime("%Y-%m-%d %H:%M:%S")
-    socketio.emit(
-        "new_message",
-        {"message": message, "sender": sender, "datetime": formatted_date},
-    )
-
-
-@socketio.on("connect")
-def handle_connect():
-    print("Client connected")
+#     now = datetime.datetime.now()
+#     formatted_date = now.strftime("%Y-%m-%d %H:%M:%S")
+#     socketio.emit(
+#         "new_message",
+#         {"message": message, "sender": sender, "datetime": formatted_date},
+#     )
 
 
-@socketio.on("disconnect")
-def handle_disconnect():
-    print("Client disconnected")
+# @socketio.on("connect")
+# def handle_connect():
+#     print("Client connected")
+
+
+# @socketio.on("disconnect")
+# def handle_disconnect():
+#     print("Client disconnected")
 
 
 if __name__ == "__main__":
