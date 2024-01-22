@@ -73,8 +73,8 @@
             required
           ></textarea>
         </div>
-
-        <button type="button" class="btn btn-success" onclick="sendMessage()">Send via webhook</button>
+        <button type="submit" class="btn btn-primary">Send</button>
+        <button type="button" class="btn btn-success" onclick="sendMessage()" disabled="disabled">Send via webhook</button>
         <button type="reset" class="btn btn-warning">Clear</button>
 
       </form>
@@ -98,6 +98,7 @@
 
 <script>
   var socket = io.connect('http://' + document.domain + ':' + location.port);
+  console.log('Socket: http://' + document.domain + ':' + location.port);
 
   socket.on('connect', function() {
     console.log('Connected to server');
@@ -192,6 +193,12 @@ if ('Notification' in window) {
               .join("");
           });
       }
+
+       // Fetch messages initially when the page loads
+       getMessages();
+
+      // Set up a timer to refresh messages every 1 second
+      setInterval(getMessages, 2000);
 
     </script>
 
