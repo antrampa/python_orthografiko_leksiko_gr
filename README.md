@@ -2,9 +2,9 @@
 
 Python GUI test app by using Tkinter
 
-with SQLite3 databse 
-
+with SQLite3 databse
 
 To Run
 
->>python3 oth_leksiko.py 
+> > pip install -r requirements.txt
+> > python3 oth_leksiko.py

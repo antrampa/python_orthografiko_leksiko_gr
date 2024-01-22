@@ -8,6 +8,9 @@
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
+    <!-- Include the Socket.IO library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -58,22 +61,28 @@
       <form method="POST">
         <div class="form-group">
           <label for="sender">Your Name:</label>
-          <input type="text" name="sender" class="form-control" required />
+          <input type="text" id="sender" name="sender" class="form-control" required />
         </div>
         <div class="form-group">
           <label for="message">Your Message:</label>
           <textarea
             name="message"
+            id="message"
             class="form-control"
             rows="4"
             required
           ></textarea>
         </div>
 
-        <button type="submit" class="btn btn-primary">Send</button>
+        <button type="button" class="btn btn-success" onclick="sendMessage()">Send via webhook</button>
         <button type="reset" class="btn btn-warning">Clear</button>
+
       </form>
+      
+      <!-- <button onclick="requestNotificationPermission()">Request Notification Permission</button> -->
+
       <hr />
+
       <div id="chat-container" style="overflow-y: scroll; height: 500px">
         {% if messages %} {% for message in messages %}
         <p>
@@ -86,7 +95,87 @@
       {% endif %}
     </div>
 
+
+<script>
+  var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+  socket.on('connect', function() {
+    console.log('Connected to server');
+  });
+
+  socket.on('disconnect', function() {
+      console.log('Disconnected from server');
+  });
+
+  // Event handler for receiving new messages
+  socket.on('new_message', function(data) {
+      var messageContainer = document.getElementById('chat-container');
+      
+      var newMessage = `<p>
+                  <strong>${data.sender}</strong>: ${data.message}
+                  <i>(${data.datetime})</i>
+        </p>`;
+        messageContainer.innerHTML = newMessage + 
+        messageContainer.innerHTML;
+      
+        showNotification('New Message from ' + data.sender, {
+            body: 'You have a new message!',
+            icon: 'icon.png'
+        });
+  });
+
+  // Function to send a new message
+  function sendMessage() {
+      var sender = document.getElementById('sender');
+      var messageInput = document.getElementById('message');
+      var message = { "message": messageInput.value, 
+                      "sender": sender.value 
+                    };
+      
+      // Send the message to the server
+      socket.emit('message', message);
+
+      // Clear the input field
+      messageInput.value = '';
+  }
+
+  // Request permission to show notifications
+function requestNotificationPermission() {
+    Notification.requestPermission().then(function(permission) {
+        if (permission === 'granted') {
+            // Permission granted, you can now show notifications
+            console.log('Notification permission granted');
+        } else {
+            // Permission denied or dismissed
+            console.warn('Notification permission denied');
+        }
+    });
+}
+
+requestNotificationPermission();
+
+// Check if the browser supports the Notification API
+if ('Notification' in window) {
+    // Function to show a notification
+    function showNotification(title, options) {
+        // Check if permission has been granted
+        if (Notification.permission === 'granted') {
+            // Create and show the notification
+            var notification = new Notification(title, options);
+        } else if (Notification.permission !== 'denied') {
+            // If the user hasn't made a decision about notifications yet,
+            // you might want to request permission again or handle it differently
+            requestNotificationPermission();
+        }
+    }
+
+}
+
+
+</script>
     <script>
+      
+      
       function getMessages() {
         // Add code to fetch the latest messages from the server
         fetch("/get_messages")
@@ -104,16 +193,11 @@
           });
       }
 
-      // Fetch messages initially when the page loads
-      getMessages();
-
-      // Set up a timer to refresh messages every 1 second
-      setInterval(getMessages, 1000);
     </script>
 
-    <footer class="footer fixed-bottom py-3 bg-light">
+    <footer class="footer bottom py-3 bg-light">
       <div class="container text-center">
-        <span class="text-muted">Version 0.0.0.2</span>
+        <span class="text-muted">Version 0.0.1.0</span>
       </div>
     </footer>
 
